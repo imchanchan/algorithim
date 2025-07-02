@@ -8,41 +8,37 @@ from collections import deque
 R,C = map(int, input().split(' '))
 alp_graph = [list(input()) for _ in range(R)]
 
+max_length = 0
 
-def dfs(q,check_alp):
-    while q:
-        x, y, cnt = q.popleft()
+def dfs(x, y, check_alp):
 
-        for i in range(4):
-            nx = x + dx[i]
-            ny = y + dy[i]
+    global max_length 
+    max_length = max(max_length, len(check_alp))
 
-            if nx<0 or nx>=len(alp_graph) or ny<0 or ny>=len(alp_graph[0]):
-                continue
-            if alp_graph[nx][ny] in check_alp:
-                continue
+    for i in range(4):
+        nx = x + dx[i]
+        ny = y + dy[i]
 
-            q.append([nx, ny, cnt+1])
-            check_alp.append(alp_graph[nx][ny])
-            print("q", q)
-            print("check_alp", check_alp)
+        if nx<0 or nx>=len(alp_graph) or ny<0 or ny>=len(alp_graph[0]):
+            continue
+        if alp_graph[nx][ny] in check_alp:
+            continue
 
-            dfs(q, check_alp)
+        check_alp.add(alp_graph[nx][ny])
+        # print("check_alp", check_alp)
 
-            res.append(len(check_alp))
-            check_alp.pop()
+        dfs(nx, ny, check_alp)
+
+        check_alp.remove(alp_graph[nx][ny])
 
 # solve
-q = deque()
-q.append([0,0,0]) # x, y, cnt
 
-check_alp = list()
-check_alp.append(alp_graph[0][0])
+check_alp = set()
+check_alp.add(alp_graph[0][0])
 
 dx = [0,0,1,-1]
 dy = [1,-1,0,0]
 
-res = []
-dfs(q, check_alp)
+dfs( 0, 0, check_alp)
 
-print(max(res))
+print(max_length)
