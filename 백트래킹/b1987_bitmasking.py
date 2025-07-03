@@ -1,5 +1,5 @@
 '''
-[문제]: 알파벳/ dfs 백트래킹 + 비트마스크
+[문제]: 알파벳/ dfs 비트마스크
 '''
 
 from collections import deque
