@@ -4,7 +4,7 @@
 
 
 [commit 규칙]
-> <단계>/<문제이름>/<YY-MM-DD>/<상태>: <핵심 한 줄 요약>
+> <단계>/<문제이름>/<날짜 YY-MM-DD >/<상태>: <핵심 한 줄 요약>
 
 - 단계: bronze|silver|gold|platinum|diamond(+숫자 가능 예: gold5)
 - 문제이름: 공백 없이 스네이크/케밥 권장 (예: start-and-link, bfs_2178)
