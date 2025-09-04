@@ -45,6 +45,8 @@ for i in range(1, 2 * N + 2 * M + 1):
 print(box)
 print(graph)
 
+
+
 # graph = list(list(map(int, (input().split(" ")))) for _ in range(N))
 
 # print("box", box)
