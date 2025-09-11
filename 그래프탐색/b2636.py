@@ -1,4 +1,4 @@
-'''
+"""
 13 12
 0 0 0 0 0 0 0 0 0 0 0 0
 0 0 0 0 0 0 0 0 0 0 0 0
@@ -15,33 +15,31 @@
 0 0 0 0 0 0 0 0 0 0 0 0
 
 
-'''
+"""
 
 
-def melt(graph_real):
-    graph = graph_real
-
+def melt(graph):
     for n in range(N):
         for m in range(M):
-            if graph[n][m]==1:
+            if graph[n][m] == 1:
                 # graph[n][m-1] = 2
                 break
             graph[n][m] = 2
 
-        for m in range(M-1, -1, -1):
+        for m in range(M - 1, -1, -1):
             if graph[n][m] == 1:
                 # graph[n][m+1] = 3
                 break
             graph[n][m] = 3
-        
+
     for m in range(M):
         for n in range(N):
             if graph[n][m] == 1:
                 # graph[n-1][m] = 4
                 break
             graph[n][m] = 4
-        
-        for n in range(N-1, -1, -1):
+
+        for n in range(N - 1, -1, -1):
             if graph[n][m] == 1:
                 # graph[n+1][m] = 5
                 break
@@ -53,90 +51,101 @@ def melt(graph_real):
     #     print(o)
     # print("="*100)
 
-    dx = [0,0,-1,1]
-    dy = [-1,1,0,0]
+    dx = [0, 0, -1, 1]
+    dy = [-1, 1, 0, 0]
 
     for n in range(N):
         for m in range(M):
-            if graph[n][m] == 1 :
+            if graph[n][m] == 1:
                 for k in range(4):
-                    nn = n+dx[k]
+                    nn = n + dx[k]
                     nm = m + dy[k]
 
                     # if graph[nn][nm] == "*":
                     #     continue
 
-                    if int(graph[nn][nm]) >1 and nn>=0 and nn<N and nm>=0 and nm<M:
+                    if (
+                        int(graph[nn][nm]) > 1
+                        and nn >= 0
+                        and nn < N
+                        and nm >= 0
+                        and nm < M
+                    ):
 
                         graph[n][m] = 0
                         break
 
     # for g in graph:
     #     print(*g)
-    
-    return graph
 
+    return graph
 
 
 # --------
 # input
 N, M = map(int, input().split(" "))
 
-graph = []
+g = []
 outside = []
 for i in range(N):
-    graph.append(list(map(int,input().split(' '))))
+    g.append(list(map(int, input().split(" "))))
     outside.append([0 for _ in range(M)])
-print(graph)
+print(g)
 # print(outside)
 
 
-
 # --- 시간 별 실행행
+
+import copy
+
 cnt = 0
 
-while(1):
-    cnt += 1
-    print(f" =={cnt}==")
-    pre_graph = []    
-    for i in graph:
-        pre_graph.append(i)
+while 1:
 
-    print("=*"*50)
-    graph = melt(graph)
-    for i in graph:
-        print(i)
-
-    print("=*"*50)
-
-    for i in pre_graph:
-        print(i)
-
-    if i in graph:
+    # 1. 그래프에서 0이 없는경우 while 탈출 !!!
+    ## graph는 모두 다 녹은 경우 / pre_graph는 다 녹기 전 경우
+    cnt_1 = 0
+    for i in g:
         if 1 not in i:
-            break
+            cnt_1 += 1
+    if cnt_1 == N:
+        break
 
+    cnt += 1
 
-    
-print("=&&*"*50)
-graph = melt(graph)
-for i in graph:
+    print(f" =={cnt}==")
+
+    # 2. graph이전 단계 복사하기 !!
+    pre_g = copy.deepcopy(g)
+
+    # 3. 치즈 녹이기 !!
+    g = melt(g)
+    for i in g:
+        print(i)
+
+    # 4. 확인! => False여야한다.
+    # pre_g : 이전
+    # g     : 이후
+    print("*", pre_g == g)
+
+# == 최종 ==
+print("== 최종 ==")
+for i in pre_g:
     print(i)
 
-print("=&&*"*50)
-
-for i in pre_graph:
+print("^" * 100)
+for i in g:
     print(i)
 
 
+print(cnt)
+cnt_1 = 0
+for i in pre_g:
+    if 1 in i:
+        cnt_1 += 1
+print(cnt_1)
 
-
-            
-
-
-
-
-'''
+"""
 [문제1]
 - 1관점으로 생각해서, 밖에 있는 1일떄를 0과 만나면으로 할까했지만, 안쪽에 있는 0과 밖에 있는 0을 구분하기 어렵다. 
 
@@ -261,10 +270,76 @@ for i in pre_graph:
 - 다 살아질때 까지 while 문 돌리기
 - 치즈가 다 살아지기 직전 (1시간전) 인지하기
 
+[문제6-1]
+- pre_g == g True가 나온다..
+
+[해결6-1]
+- 얕은 복사이기에, g의 진정한 복사본을 만들어야한다 !!! 
+깊은 복사로 !! 
+
 [문제6-2]
-- graph로 함수넣고, 반환하면서 이전 graph가 저장이 안된다. 
+- 음.. 함수내부에서 ?? 
+
 [해결6-2]
-- 함수내부에서 graph를 복사해서 써야해.
+- 함수내부에서 graph를 deepcopy해서 써야해.
+
+>> 성공이다!! 
+== 최종 ==
+[5, 5, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5]
+[5, 5, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5]
+[5, 5, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5]
+[5, 5, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5]
+[5, 5, 0, 0, 4, 4, 4, 4, 5, 5, 5, 5]
+[5, 5, 0, 1, 0, 0, 4, 4, 5, 5, 5, 5]
+[5, 5, 0, 1, 1, 0, 4, 0, 5, 5, 5, 5]
+[5, 5, 5, 0, 0, 0, 4, 0, 5, 5, 5, 5]
+[5, 5, 5, 0, 1, 1, 0, 0, 5, 5, 5, 5]
+[5, 5, 5, 0, 1, 1, 1, 0, 5, 5, 5, 5]
+[5, 5, 5, 0, 0, 0, 0, 0, 5, 5, 5, 5]
+[5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5]
+[5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5]
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[5, 5, 5, 4, 4, 4, 4, 5, 5, 5, 5, 5]
+[5, 5, 5, 4, 4, 4, 4, 5, 5, 5, 5, 5]
+[5, 5, 5, 4, 4, 4, 4, 5, 5, 5, 5, 5]
+[5, 5, 5, 4, 4, 4, 4, 5, 5, 5, 5, 5]
+[5, 5, 5, 4, 4, 4, 4, 5, 5, 5, 5, 5]
+[5, 5, 5, 0, 4, 4, 4, 5, 5, 5, 5, 5]
+[5, 5, 5, 0, 0, 4, 4, 5, 5, 5, 5, 5]
+[5, 5, 5, 5, 3, 4, 4, 5, 5, 5, 5, 5]
+[5, 5, 5, 5, 0, 0, 4, 5, 5, 5, 5, 5]
+[5, 5, 5, 5, 0, 0, 0, 5, 5, 5, 5, 5]
+[5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5]
+[5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5]
+[5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5]
+
+"""
+
+
+'''
+[문제1 싹 다 틀 렸 다 ..]
+
+(햇빛 논법 틀림)
+[5, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5]
+[5, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5]
+[5, 4, 4, 4, 4, 4, 4, 0, 0, 5, 5, 5]
+[5, 0, 0, 0, 4, 4, 4, 0, 0, 5, 5, 5]
+[5, 0, 1, 1, 0, 0, 0, 3, 3, 5, 5, 5]
+[5, 0, 1, 1, 1, 1, 0, 0, 0, 5, 5, 5]
+[5, 0, 1, 1, 1, "0", "0", 1, 0, 5, 5, 5] **
+[5, 5, 0, 1, "0", "0", "0", 1, 0, 5, 5, 5] ** 
+[5, 5, 0, 1, 1, 1, 1, 1, 0, 5, 5, 5]
+[5, 5, 0, 1, 1, 1, 1, 1, 0, 5, 5, 5]
+[5, 5, 0, 1, 1, 1, 1, 1, 0, 5, 5, 5]
+[5, 5, 0, 0, 0, 0, 0, 0, 0, 5, 5, 5]
+[5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5]
+>> 반례
+
+생각해봐, **가 해결이 안됨.
+
+[해결1]
+무조건 BFS야.. 하...
+그냥 BFS로 돌리고, 1나오면 탐색 그만 하는 방향
 
 
 '''
