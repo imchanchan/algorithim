@@ -13,7 +13,73 @@
 0 0 1 1 1 1 1 1 1 0 0 0
 0 0 1 1 1 1 1 1 1 0 0 0
 0 0 0 0 0 0 0 0 0 0 0 0
+
+
 '''
+
+
+def melt(graph_real):
+    graph = graph_real
+
+    for n in range(N):
+        for m in range(M):
+            if graph[n][m]==1:
+                # graph[n][m-1] = 2
+                break
+            graph[n][m] = 2
+
+        for m in range(M-1, -1, -1):
+            if graph[n][m] == 1:
+                # graph[n][m+1] = 3
+                break
+            graph[n][m] = 3
+        
+    for m in range(M):
+        for n in range(N):
+            if graph[n][m] == 1:
+                # graph[n-1][m] = 4
+                break
+            graph[n][m] = 4
+        
+        for n in range(N-1, -1, -1):
+            if graph[n][m] == 1:
+                # graph[n+1][m] = 5
+                break
+            graph[n][m] = 5
+
+    # # [확인]
+    # print("="*100)
+    # for o in graph:
+    #     print(o)
+    # print("="*100)
+
+    dx = [0,0,-1,1]
+    dy = [-1,1,0,0]
+
+    for n in range(N):
+        for m in range(M):
+            if graph[n][m] == 1 :
+                for k in range(4):
+                    nn = n+dx[k]
+                    nm = m + dy[k]
+
+                    # if graph[nn][nm] == "*":
+                    #     continue
+
+                    if int(graph[nn][nm]) >1 and nn>=0 and nn<N and nm>=0 and nm<M:
+
+                        graph[n][m] = 0
+                        break
+
+    # for g in graph:
+    #     print(*g)
+    
+    return graph
+
+
+
+# --------
+# input
 N, M = map(int, input().split(" "))
 
 graph = []
@@ -25,59 +91,48 @@ print(graph)
 # print(outside)
 
 
-for n in range(N):
-    for m in range(M):
-        if graph[n][m]==1:
-            # graph[n][m-1] = 2
-            break
-        graph[n][m] = 2
 
-    for m in range(M-1, -1, -1):
-        if graph[n][m] == 1:
-            # graph[n][m+1] = 3
+# --- 시간 별 실행행
+cnt = 0
+
+while(1):
+    cnt += 1
+    print(f" =={cnt}==")
+    pre_graph = []    
+    for i in graph:
+        pre_graph.append(i)
+
+    print("=*"*50)
+    graph = melt(graph)
+    for i in graph:
+        print(i)
+
+    print("=*"*50)
+
+    for i in pre_graph:
+        print(i)
+
+    if i in graph:
+        if 1 not in i:
             break
-        graph[n][m] = 3
+
+
     
-for m in range(M):
-    for n in range(N):
-        if graph[n][m] == 1:
-            # graph[n-1][m] = 4
-            break
-        graph[n][m] = 4
-    
-    for n in range(N-1, -1, -1):
-        if graph[n][m] == 1:
-            # graph[n+1][m] = 5
-            break
-        graph[n][m] = 5
+print("=&&*"*50)
+graph = melt(graph)
+for i in graph:
+    print(i)
 
-# [확인]
-print("="*100)
-for o in graph:
-    print(o)
-print("="*100)
+print("=&&*"*50)
 
-dx = [0,0,-1,1]
-dy = [-1,1,0,0]
-
-for n in range(N):
-    for m in range(M):
-        if graph[n][m] == 1 :
-            for k in range(4):
-                nn = n+dx[k]
-                nm = m + dy[k]
-
-                # if graph[nn][nm] == "*":
-                #     continue
-
-                if int(graph[nn][nm]) >1 and nn>=0 and nn<N and nm>=0 and nm<M:
-
-                    graph[n][m] = 0
-                    break
+for i in pre_graph:
+    print(i)
 
 
-for g in graph:
-    print(g)
+
+
+            
+
 
 
 
@@ -201,6 +256,15 @@ for g in graph:
 [5, 5, 0, 1, 1, 1, 1, 1, 0, 5, 5, 5]
 [5, 5, 0, 0, 0, 0, 0, 0, 0, 5, 5, 5]
 [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5]
+
+[문제6]
+- 다 살아질때 까지 while 문 돌리기
+- 치즈가 다 살아지기 직전 (1시간전) 인지하기
+
+[문제6-2]
+- graph로 함수넣고, 반환하면서 이전 graph가 저장이 안된다. 
+[해결6-2]
+- 함수내부에서 graph를 복사해서 써야해.
 
 
 '''
