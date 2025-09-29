@@ -4,7 +4,7 @@
 # (1,0)  = up
 # (-1,0) = down
 
-# 0. 초기설정
+# ===== 0. 초기설정 ===== 
 N, M = map(int, input().split(' '))
 graph = []
 for _ in range(N):
@@ -37,7 +37,16 @@ for i in range(N):
 print(R_point, B_point)
 visited.add(R_point)
 
-# ===== 2. 초기 방향 설정 f_dir값 초기 방향 =====
+
+
+# 대 함 수 시작 !! 
+#  input : 이동 시작 point, visited 
+#  실행(one-cycle) : 1. 방향찾기, 2. re확인 , 3. 나아가기
+#  ouput : 이동 완료 point, visited
+
+
+
+# ===== [ 1. 초기 방향 설정 f_dir값 초기 방향 ]  =====
 # R 기준, 나아갈 방향 찾기 = 사방 훑기 (우선순위 'O' 먼저, 다음 '.')
 x, y = R_point
 
@@ -60,7 +69,7 @@ for k in range(4):
         ## (0,1) = right, (0,-1) = left, (1,0) = up, (-1,0) = down
         f_dir.append((dx[k], dy[k]))
 
-# ===== 3. [re] 만들기 =====
+# ===== [ 2. [re] 만들기 ] =====
 # 조심할것 (B가 앞길을 가로막고있는 상황) : right & down : RB , left & up : BR 
 dx, dy = f_dir.popleft()
 
@@ -84,12 +93,12 @@ if (dx, dy) == (1,0) or (dx, dy) == (-1,0) :
 
 
 
-# ===== 4. 나아가기. =====
+# =====[ 3. 나아가기. ]=====
 # (0) 나아가는 방법 [함수로 정의] : '#' 부딫힐때까지 나아가기
 # (1) RB, BR 존재여부로, B와 R 중에 먼저 나아갈 것 결정하기.
 # (2) 위에서, 정해진 순서에 맞게 나아가기. 
 
-# ===== 4-0. =====
+# ===== 3-0. =====
 def go(point, visited, dir_x, dir_y): # 시작 지점, 방문 기록 표시, 해당 방향
     print(f'point = {point}, visited = {visited}, dir = ({dir_x, dir_y})')
     
@@ -114,7 +123,7 @@ def go(point, visited, dir_x, dir_y): # 시작 지점, 방문 기록 표시, 해
 
 
 
-# ===== 4-1. =====
+# ===== 3-1. =====
 # (1) B 먼저 처리, 후에 R 처리
 # (2) 각각 
 if ((dx, dy) == (0,1) or (dx, dy) == (-1,0))  and "RB" in re :
@@ -131,22 +140,16 @@ if ((dx, dy) == (0,-1) or (dx, dy) == (1,0))  and "BR" in re :
     # B먼저 처리하기 => R 처리하기 
 
 
-# ===== 4-2.  =====
+# ===== 3-2.  =====
 
 print(f_dir)
 # dx[k], dy[k] 방향으로 전진
 
 print('&&', R_point)
 point, visited = go(R_point, visited, dx, dy)
+
 print('##최종 Point', point)
 print('##최종 visited', visited)
-
-
-
-
-
-
-
 
 
 
