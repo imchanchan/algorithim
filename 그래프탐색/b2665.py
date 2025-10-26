@@ -17,8 +17,7 @@ for i in range(n):
 for room in rooms:
     print(room)
 
-# ===== 1. 탐색 =====
-visited = [[0]*n for _ in range(n)]
+# ===== 1. dfs =====
 paths = []
 
 dx = [-1,1,0,0]
@@ -31,9 +30,12 @@ def dfs(x,y,path, cnt):
     if x == n-1 and y == n-1:
         print(f"** 4. 도달지점에 오신걸 환영합니다 : {path} ")
         paths.append((path[:],cnt)) # 복사해서, 경로저장
+        print('현재 검정색:', cnt)
+
         print(path, '\n')
         return
     
+    dir = []
 
     for k in range(4):
         # if (dx[k], dy[k]) != (1,0) and (dx[k], dy[k]) != (0,1):
@@ -42,30 +44,30 @@ def dfs(x,y,path, cnt):
         nx = x + dx[k]
         ny = y + dy[k]
 
-        if nx<0 or nx>=n or ny<0 or ny>=n or visited[nx][ny] : ## 가지않을 조건 [1. 좌표이탈, 2. 방문한곳]
+        if nx<0 or nx>=n or ny<0 or ny>=n  : ## 가지않을 조건 [1. 좌표이탈, 2. 방문한곳]
             continue
 
-        if (nx, ny) in path:
+        if (nx, ny) in path: # 이미 방문한 곳은 패스
             continue
 
         if rooms[nx][ny]== 0: ## 검정색일때, 카운팅
             cnt += 1
         
         # nx, ny 좌표 방문하기
-        visited[nx][ny]=1
-        # 경로별, 방문 좌표 저장하기
-        print(f"** 3. {(nx, ny)}값이 path 배열{path}에 들어갑니다. ")
         path.append((nx, ny))
+        
+        
+        dir.append(((x,y), cnt))
+
+
 
         dfs(nx,ny,path,cnt)
+        
+        path.pop() # 백트래킹 / pop 해서 나온 결과는, (nx,ny)값이다. 
 
-        # visited[nx][ny] = 0
-        path.pop() # 백트래킹
-        cnt -= 0
+        if rooms[nx][ny] == 0:
+            cnt-=1
 
-print(paths)
-
-visited[0][0] = 1
 dfs(0,0,[(0,0)],0)
 
 print(paths)
@@ -99,7 +101,32 @@ bfs보다 dfs가 메모리적으로 좋다. 왜냐!
 
 
 
+[문제2]: 도착지점까지는 잘 온다.
+>> [(0, 0), (0, 1), (0, 2), (1, 2), (1, 3), (1, 4), (1, 5), (2, 5), (2, 6), (3, 6), (4, 6), (5, 6), (6, 6), (6, 7), (7, 7)]
+여기서, visited[nx][ny] = 0 이 부분이 문제다.
+>> visited[nx][ny] = 0 을 하자니, 똑같은 경로를 또 가고있고..
+>> visited[nx][ny] = 1 을 하자니, 다음에 다른 경로에서 해당 지점을 방문해야할때 문제가 된다. 
+        +-------------------------------------------------------------+
+        | visited[nx][ny] = 0                                         |  
+        | > 같은 경로를 중복해서 다시 탐색하게 됨                          |
+        |                                                             |
+        | visited[nx][ny] = 1                                         |
+        | > 다른 경로가 그 칸을 방문해야 할 때 막혀버림                     | 
+        +-------------------------------------------------------------+
+
+[해결2]:
+bfs로 쉽게 생각해보면, queue와 visited=set()두개의 자료형으로 할당받아서, 방문한 곳을 확인하고있다. 
+
+현재 dfs로 보면, path와 visited는 같은 역할을 하고 있는셈이다. 
+
+>> visited는 없애는 방향으로!
 
 
+[문제3]: 슬슬 dfs에 결정적인 문제를 찾은것같다.
+"양방향 + 백트래킹" 하다가보면, 
+
+
+[고민]: 방향에 대한 브레이크를 걸어보면 어떨까?
+-> 어느시점에서 브레이크가 필요한가? => (3,5, 아래)에 대한 브레이크가 먹히는 곳은 (2,4)일때다. => 즉, for문 4방 탐색에서!
 
 '''
